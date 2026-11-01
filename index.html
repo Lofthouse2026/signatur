@@ -17,6 +17,13 @@
   .hint { font-size:12px; color:#7a868a; margin-top:4px; }
   button { margin-top:18px; width:100%; font-size:16px; padding:12px; background:#0a3e4a; color:#fff; border:0; border-radius:6px; cursor:pointer; }
   button.done { background:#b18f3f; }
+  button:disabled { background:#9aa5a8; cursor:default; }
+  .upload { margin-top:10px; padding:12px; background:#f7f4ec; border-radius:6px; }
+  .upload input[type=file] { border:0; padding:0; font-size:13px; }
+  label.check { font-weight:normal; color:#222; display:flex; gap:8px; align-items:center; margin:10px 0 0; }
+  label.check input { width:auto; }
+  .status { font-size:13px; color:#0a3e4a; margin-top:8px; font-weight:bold; }
+  .status.err { color:#c0392b; }
   .preview { overflow-x:auto; }
   h2 { color:#0a3e4a; font-size:18px; margin:32px 0 12px; }
   ol { padding-left:20px; line-height:1.7; }
@@ -32,8 +39,13 @@
     <label for="mobil">Mobil (optional)</label><input id="mobil" placeholder="+49 170 1234567">
     <label for="email">E-Mail</label><input id="email" placeholder="name@lh-catering.de">
     <label for="foto">Foto</label>
-    <select id="foto"><option value="">Kein Foto – Lofthouse-Wappen</option><option value="foto-maikel-kling.png">Maikel Kling</option></select>
-    <div class="hint">Eigenes Foto gewünscht? Bitte an Maikel Kling schicken.</div>
+    <select id="foto"><option value="">Kein Foto – Lofthouse-Wappen</option><option value="https://lofthouse2026.github.io/signatur/foto-maikel-kling.png">Maikel Kling</option><option value="__upload__">Eigenes Foto hochladen …</option></select>
+    <div id="upload" class="upload" hidden>
+      <input id="file" type="file" accept="image/*">
+      <label class="check"><input id="freistellen" type="checkbox" checked> Hintergrund entfernen</label>
+      <div class="hint">Am besten ein Porträt mit Kopf und Schultern. Das Foto wird rund zugeschnitten und online gespeichert.</div>
+      <div id="status" class="status"></div>
+    </div>
     <button id="copy" type="button">Signatur kopieren</button>
   </div>
   <div class="card preview"><div id="sig"></div></div>
@@ -51,7 +63,7 @@
 <video src="anleitung.mp4" controls playsinline preload="metadata"></video>
 </div>
 <script>
-const TPL = {"wappen": "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:540px;\">\n<tr><td style=\"padding:0;\">\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;\">\n<tr>\n<td valign=\"middle\" style=\"padding:0 20px 0 0;\"><img src=\"https://lofthouse2026.github.io/signatur/lofthouse-wappen.png\" width=\"120\" height=\"123\" alt=\"Lofthouse\" style=\"display:block;border:0;width:120px;height:123px;\"><\/td>\n<td valign=\"top\" style=\"border-left:2px solid #b18f3f;padding:2px 0 2px 20px;\">\n<a href=\"https://www.lh-catering.de\" target=\"_blank\" style=\"text-decoration:none;\"><img src=\"https://lofthouse2026.github.io/signatur/lofthouse-wortmarke.png\" width=\"230\" height=\"48\" alt=\"Lofthouse Catering &amp; Events\" style=\"display:block;border:0;width:230px;height:48px;\"><\/a>\n<!--name--><div style=\"font-family:Arial, Helvetica, sans-serif;font-size:17px;line-height:22px;font-weight:bold;color:#0a3e4a;padding-top:12px;\">{{NAME}}<\/div><!--/name--><!--position--><div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;font-size:13px;\">{{POSITION}}<\/div><!--/position-->\n<div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;padding-top:10px;\"><b style=\"color:#0a3e4a;\">Lofthouse Catering GmbH<\/b><br>Pirazzistra\u00dfe&nbsp;41 \u00b7 63067&nbsp;Offenbach<\/div>\n<div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;padding-top:4px;\"><span style=\"color:#b18f3f;font-weight:bold;\">T<\/span>&nbsp;&nbsp;<a href=\"tel:+4969810811\" style=\"color:#0a3e4a;text-decoration:none;\">069&nbsp;\u2013&nbsp;810&nbsp;811<\/a><!--mobil--><br><span style=\"color:#b18f3f;font-weight:bold;\">M<\/span>&nbsp;&nbsp;<a href=\"{{TEL}}\" style=\"color:#0a3e4a;text-decoration:none;\">{{MOBIL}}<\/a><!--/mobil--><!--email--><br><span style=\"color:#b18f3f;font-weight:bold;\">E<\/span>&nbsp;&nbsp;<a href=\"mailto:{{EMAIL}}\" style=\"color:#0a3e4a;text-decoration:none;\">{{EMAIL}}<\/a><!--/email--><br><span style=\"color:#b18f3f;font-weight:bold;\">W<\/span>&nbsp;&nbsp;<a href=\"https://www.lh-catering.de\" target=\"_blank\" style=\"color:#0a3e4a;text-decoration:none;font-weight:bold;\">www.LH-Catering.de<\/a><\/div>\n<div style=\"padding-top:8px;line-height:0;\"><a href=\"https://www.instagram.com/lofthousecatering/\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-instagram.png\" width=\"24\" height=\"24\" alt=\"Instagram\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><a href=\"https://www.facebook.com/lofthousecatering\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-facebook.png\" width=\"24\" height=\"24\" alt=\"Facebook\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><a href=\"https://www.linkedin.com/company/lofthouse-catering/\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-linkedin.png\" width=\"24\" height=\"24\" alt=\"LinkedIn\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><\/div>\n<\/td>\n<\/tr>\n<\/table>\n<\/td><\/tr>\n<tr><td style=\"padding:14px 0 0 0;\">\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;border-top:1px solid #dfe4e5;\">\n<tr>\n<td valign=\"middle\" style=\"padding:10px 12px 0 0;\"><img src=\"https://lofthouse2026.github.io/signatur/circle-cube-logo.png\" width=\"92\" height=\"20\" alt=\"Circle Cube\" style=\"display:block;border:0;width:92px;height:20px;\"><\/td>\n<td valign=\"middle\" style=\"font-family:Arial, Helvetica, sans-serif;font-size:11px;line-height:15px;color:#5b6b70;padding:10px 0 0 0;\">Unsere Eventlocation am Hafen<br><b style=\"color:#0a3e4a;\">Circle-Cube<\/b> \u00b7 Hafenallee 61 \u00b7 63067 Offenbach<\/td>\n<\/tr>\n<\/table>\n<\/td><\/tr>\n<\/table>", "foto": "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:540px;\">\n<tr><td style=\"padding:0;\">\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;\">\n<tr>\n<td valign=\"middle\" style=\"padding:0 20px 0 0;\"><img src=\"https://lofthouse2026.github.io/signatur/{{FOTO}}\" width=\"120\" height=\"120\" alt=\"{{NAME}}\" style=\"display:block;border:0;width:120px;height:120px;border-radius:50%;\"><\/td>\n<td valign=\"top\" style=\"border-left:2px solid #b18f3f;padding:2px 0 2px 20px;\">\n<a href=\"https://www.lh-catering.de\" target=\"_blank\" style=\"text-decoration:none;\"><img src=\"https://lofthouse2026.github.io/signatur/lofthouse-logo.png\" width=\"230\" height=\"50\" alt=\"Lofthouse Catering &amp; Events\" style=\"display:block;border:0;width:230px;height:50px;\"><\/a>\n<!--name--><div style=\"font-family:Arial, Helvetica, sans-serif;font-size:17px;line-height:22px;font-weight:bold;color:#0a3e4a;padding-top:12px;\">{{NAME}}<\/div><!--/name--><!--position--><div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;font-size:13px;\">{{POSITION}}<\/div><!--/position-->\n<div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;padding-top:10px;\"><b style=\"color:#0a3e4a;\">Lofthouse Catering GmbH<\/b><br>Pirazzistra\u00dfe&nbsp;41 \u00b7 63067&nbsp;Offenbach<\/div>\n<div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;padding-top:4px;\"><span style=\"color:#b18f3f;font-weight:bold;\">T<\/span>&nbsp;&nbsp;<a href=\"tel:+4969810811\" style=\"color:#0a3e4a;text-decoration:none;\">069&nbsp;\u2013&nbsp;810&nbsp;811<\/a><!--mobil--><br><span style=\"color:#b18f3f;font-weight:bold;\">M<\/span>&nbsp;&nbsp;<a href=\"{{TEL}}\" style=\"color:#0a3e4a;text-decoration:none;\">{{MOBIL}}<\/a><!--/mobil--><!--email--><br><span style=\"color:#b18f3f;font-weight:bold;\">E<\/span>&nbsp;&nbsp;<a href=\"mailto:{{EMAIL}}\" style=\"color:#0a3e4a;text-decoration:none;\">{{EMAIL}}<\/a><!--/email--><br><span style=\"color:#b18f3f;font-weight:bold;\">W<\/span>&nbsp;&nbsp;<a href=\"https://www.lh-catering.de\" target=\"_blank\" style=\"color:#0a3e4a;text-decoration:none;font-weight:bold;\">www.LH-Catering.de<\/a><\/div>\n<div style=\"padding-top:8px;line-height:0;\"><a href=\"https://www.instagram.com/lofthousecatering/\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-instagram.png\" width=\"24\" height=\"24\" alt=\"Instagram\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><a href=\"https://www.facebook.com/lofthousecatering\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-facebook.png\" width=\"24\" height=\"24\" alt=\"Facebook\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><a href=\"https://www.linkedin.com/company/lofthouse-catering/\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-linkedin.png\" width=\"24\" height=\"24\" alt=\"LinkedIn\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><\/div>\n<\/td>\n<\/tr>\n<\/table>\n<\/td><\/tr>\n<tr><td style=\"padding:14px 0 0 0;\">\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;border-top:1px solid #dfe4e5;\">\n<tr>\n<td valign=\"middle\" style=\"padding:10px 12px 0 0;\"><img src=\"https://lofthouse2026.github.io/signatur/circle-cube-logo.png\" width=\"92\" height=\"20\" alt=\"Circle Cube\" style=\"display:block;border:0;width:92px;height:20px;\"><\/td>\n<td valign=\"middle\" style=\"font-family:Arial, Helvetica, sans-serif;font-size:11px;line-height:15px;color:#5b6b70;padding:10px 0 0 0;\">Unsere Eventlocation am Hafen<br><b style=\"color:#0a3e4a;\">Circle-Cube<\/b> \u00b7 Hafenallee 61 \u00b7 63067 Offenbach<\/td>\n<\/tr>\n<\/table>\n<\/td><\/tr>\n<\/table>"};
+const TPL = {"wappen": "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:540px;\">\n<tr><td style=\"padding:0;\">\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;\">\n<tr>\n<td valign=\"middle\" style=\"padding:0 20px 0 0;\"><img src=\"https://lofthouse2026.github.io/signatur/lofthouse-wappen.png\" width=\"120\" height=\"123\" alt=\"Lofthouse\" style=\"display:block;border:0;width:120px;height:123px;\"><\/td>\n<td valign=\"top\" style=\"border-left:2px solid #b18f3f;padding:2px 0 2px 20px;\">\n<a href=\"https://www.lh-catering.de\" target=\"_blank\" style=\"text-decoration:none;\"><img src=\"https://lofthouse2026.github.io/signatur/lofthouse-wortmarke.png\" width=\"230\" height=\"48\" alt=\"Lofthouse Catering &amp; Events\" style=\"display:block;border:0;width:230px;height:48px;\"><\/a>\n<!--name--><div style=\"font-family:Arial, Helvetica, sans-serif;font-size:17px;line-height:22px;font-weight:bold;color:#0a3e4a;padding-top:12px;\">{{NAME}}<\/div><!--/name--><!--position--><div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;font-size:13px;\">{{POSITION}}<\/div><!--/position-->\n<div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;padding-top:10px;\"><b style=\"color:#0a3e4a;\">Lofthouse Catering GmbH<\/b><br>Pirazzistra\u00dfe&nbsp;41 \u00b7 63067&nbsp;Offenbach<\/div>\n<div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;padding-top:4px;\"><span style=\"color:#b18f3f;font-weight:bold;\">T<\/span>&nbsp;&nbsp;<a href=\"tel:+4969810811\" style=\"color:#0a3e4a;text-decoration:none;\">069&nbsp;\u2013&nbsp;810&nbsp;811<\/a><!--mobil--><br><span style=\"color:#b18f3f;font-weight:bold;\">M<\/span>&nbsp;&nbsp;<a href=\"{{TEL}}\" style=\"color:#0a3e4a;text-decoration:none;\">{{MOBIL}}<\/a><!--/mobil--><!--email--><br><span style=\"color:#b18f3f;font-weight:bold;\">E<\/span>&nbsp;&nbsp;<a href=\"mailto:{{EMAIL}}\" style=\"color:#0a3e4a;text-decoration:none;\">{{EMAIL}}<\/a><!--/email--><br><span style=\"color:#b18f3f;font-weight:bold;\">W<\/span>&nbsp;&nbsp;<a href=\"https://www.lh-catering.de\" target=\"_blank\" style=\"color:#0a3e4a;text-decoration:none;font-weight:bold;\">www.LH-Catering.de<\/a><\/div>\n<div style=\"padding-top:8px;line-height:0;\"><a href=\"https://www.instagram.com/lofthousecatering/\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-instagram.png\" width=\"24\" height=\"24\" alt=\"Instagram\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><a href=\"https://www.facebook.com/lofthousecatering\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-facebook.png\" width=\"24\" height=\"24\" alt=\"Facebook\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><a href=\"https://www.linkedin.com/company/lofthouse-catering/\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-linkedin.png\" width=\"24\" height=\"24\" alt=\"LinkedIn\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><\/div>\n<\/td>\n<\/tr>\n<\/table>\n<\/td><\/tr>\n<tr><td style=\"padding:14px 0 0 0;\">\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;border-top:1px solid #dfe4e5;\">\n<tr>\n<td valign=\"middle\" style=\"padding:10px 12px 0 0;\"><img src=\"https://lofthouse2026.github.io/signatur/circle-cube-logo.png\" width=\"92\" height=\"20\" alt=\"Circle Cube\" style=\"display:block;border:0;width:92px;height:20px;\"><\/td>\n<td valign=\"middle\" style=\"font-family:Arial, Helvetica, sans-serif;font-size:11px;line-height:15px;color:#5b6b70;padding:10px 0 0 0;\">Unsere Eventlocation am Hafen<br><b style=\"color:#0a3e4a;\">Circle-Cube<\/b> \u00b7 Hafenallee 61 \u00b7 63067 Offenbach<\/td>\n<\/tr>\n<\/table>\n<\/td><\/tr>\n<\/table>", "foto": "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:540px;\">\n<tr><td style=\"padding:0;\">\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;\">\n<tr>\n<td valign=\"middle\" style=\"padding:0 20px 0 0;\"><img src=\"{{FOTO}}\" width=\"120\" height=\"120\" alt=\"{{NAME}}\" style=\"display:block;border:0;width:120px;height:120px;border-radius:50%;\"><\/td>\n<td valign=\"top\" style=\"border-left:2px solid #b18f3f;padding:2px 0 2px 20px;\">\n<a href=\"https://www.lh-catering.de\" target=\"_blank\" style=\"text-decoration:none;\"><img src=\"https://lofthouse2026.github.io/signatur/lofthouse-logo.png\" width=\"230\" height=\"50\" alt=\"Lofthouse Catering &amp; Events\" style=\"display:block;border:0;width:230px;height:50px;\"><\/a>\n<!--name--><div style=\"font-family:Arial, Helvetica, sans-serif;font-size:17px;line-height:22px;font-weight:bold;color:#0a3e4a;padding-top:12px;\">{{NAME}}<\/div><!--/name--><!--position--><div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;font-size:13px;\">{{POSITION}}<\/div><!--/position-->\n<div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;padding-top:10px;\"><b style=\"color:#0a3e4a;\">Lofthouse Catering GmbH<\/b><br>Pirazzistra\u00dfe&nbsp;41 \u00b7 63067&nbsp;Offenbach<\/div>\n<div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;padding-top:4px;\"><span style=\"color:#b18f3f;font-weight:bold;\">T<\/span>&nbsp;&nbsp;<a href=\"tel:+4969810811\" style=\"color:#0a3e4a;text-decoration:none;\">069&nbsp;\u2013&nbsp;810&nbsp;811<\/a><!--mobil--><br><span style=\"color:#b18f3f;font-weight:bold;\">M<\/span>&nbsp;&nbsp;<a href=\"{{TEL}}\" style=\"color:#0a3e4a;text-decoration:none;\">{{MOBIL}}<\/a><!--/mobil--><!--email--><br><span style=\"color:#b18f3f;font-weight:bold;\">E<\/span>&nbsp;&nbsp;<a href=\"mailto:{{EMAIL}}\" style=\"color:#0a3e4a;text-decoration:none;\">{{EMAIL}}<\/a><!--/email--><br><span style=\"color:#b18f3f;font-weight:bold;\">W<\/span>&nbsp;&nbsp;<a href=\"https://www.lh-catering.de\" target=\"_blank\" style=\"color:#0a3e4a;text-decoration:none;font-weight:bold;\">www.LH-Catering.de<\/a><\/div>\n<div style=\"padding-top:8px;line-height:0;\"><a href=\"https://www.instagram.com/lofthousecatering/\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-instagram.png\" width=\"24\" height=\"24\" alt=\"Instagram\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><a href=\"https://www.facebook.com/lofthousecatering\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-facebook.png\" width=\"24\" height=\"24\" alt=\"Facebook\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><a href=\"https://www.linkedin.com/company/lofthouse-catering/\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-linkedin.png\" width=\"24\" height=\"24\" alt=\"LinkedIn\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><\/div>\n<\/td>\n<\/tr>\n<\/table>\n<\/td><\/tr>\n<tr><td style=\"padding:14px 0 0 0;\">\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;border-top:1px solid #dfe4e5;\">\n<tr>\n<td valign=\"middle\" style=\"padding:10px 12px 0 0;\"><img src=\"https://lofthouse2026.github.io/signatur/circle-cube-logo.png\" width=\"92\" height=\"20\" alt=\"Circle Cube\" style=\"display:block;border:0;width:92px;height:20px;\"><\/td>\n<td valign=\"middle\" style=\"font-family:Arial, Helvetica, sans-serif;font-size:11px;line-height:15px;color:#5b6b70;padding:10px 0 0 0;\">Unsere Eventlocation am Hafen<br><b style=\"color:#0a3e4a;\">Circle-Cube<\/b> \u00b7 Hafenallee 61 \u00b7 63067 Offenbach<\/td>\n<\/tr>\n<\/table>\n<\/td><\/tr>\n<\/table>"};
 const $ = id => document.getElementById(id);
 const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function tel(m) {
@@ -60,10 +72,92 @@ function tel(m) {
   else if (d.startsWith("0")) d = "+49" + d.slice(1);
   return "tel:" + d;
 }
+const SUPA = "https://fcxeauwgqnoriucrqcdm.supabase.co", SUPA_KEY = "sb_publishable_0v-5KTQK6pbsQTzGwHcEkQ_qSwYz4do";
+const BG = "rgb(236,226,204)", PX = 240;
+const BGREMOVAL = "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm";
+const BGREMOVAL_DATA = "https://staticimgly.com/@imgly/background-removal-data/1.7.0/dist/";
+let uploadedUrl = "", busy = false;
+
+function status(msg, err) { $("status").textContent = msg; $("status").className = "status" + (err ? " err" : ""); }
+function slug(t) {
+  return (t.toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")) || "foto";
+}
+// wie passfoto_crop() in make_signature.py: Quadrat um Kopf und Schultern anhand der Transparenz
+function cropByAlpha(bmp) {
+  const c = new OffscreenCanvas(bmp.width, bmp.height), g = c.getContext("2d");
+  g.drawImage(bmp, 0, 0);
+  const a = g.getImageData(0, 0, bmp.width, bmp.height).data, W = bmp.width, H = bmp.height;
+  let l = W, t = H, r = 0, b = 0;
+  for (let y = 0; y < H; y += 2) for (let x = 0; x < W; x += 2) if (a[(y * W + x) * 4 + 3] > 128) {
+    if (x < l) l = x; if (x > r) r = x; if (y < t) t = y; if (y > b) b = y;
+  }
+  if (r <= l) return cropCenter(bmp);
+  const side = Math.min(Math.round((r - l) * 0.78), W, H);
+  let sum = 0, n = 0;
+  for (let y = t; y < Math.min(H, t + side * 0.3); y += 4) for (let x = 0; x < W; x += 2)
+    if (a[(y * W + x) * 4 + 3] > 128) { sum += x; n++; }
+  const cx = n ? sum / n : (l + r) / 2;
+  return { src: bmp, sx: Math.max(0, Math.min(Math.round(cx - side / 2), W - side)), sy: Math.max(0, Math.round(t - side * 0.1)), s: side };
+}
+function cropCenter(bmp) {
+  const s = Math.min(bmp.width, bmp.height);
+  return { src: bmp, sx: (bmp.width - s) / 2, sy: (bmp.height - s) * 0.35, s };
+}
+// wie export_photo(): rund, heller Hintergrund, goldener Ring – erst groß zeichnen, dann verkleinern
+function renderRound(crop) {
+  const big = PX * 4, c = document.createElement("canvas"); c.width = c.height = big;
+  const g = c.getContext("2d");
+  g.save(); g.beginPath(); g.arc(big / 2, big / 2, big / 2, 0, Math.PI * 2); g.clip();
+  g.fillStyle = BG; g.fillRect(0, 0, big, big);
+  g.drawImage(crop.src, crop.sx, crop.sy, crop.s, crop.s, 0, 0, big, big);
+  g.restore();
+  const lw = big * 0.025;
+  g.lineWidth = lw; g.strokeStyle = "#b18f3f";
+  g.beginPath(); g.arc(big / 2, big / 2, big / 2 - lw / 2, 0, Math.PI * 2); g.stroke();
+  const out = document.createElement("canvas"); out.width = out.height = PX;
+  const o = out.getContext("2d"); o.imageSmoothingQuality = "high";
+  o.drawImage(c, 0, 0, PX, PX);
+  return out;
+}
+async function processPhoto(file) {
+  busy = true; uploadedUrl = ""; render();
+  try {
+    status("Foto wird vorbereitet …");
+    let crop = cropCenter(await createImageBitmap(file));
+    if ($("freistellen").checked) {
+      status("Hintergrund wird entfernt … beim ersten Mal bis zu 30 Sekunden");
+      try {
+        const { removeBackground } = await import(BGREMOVAL);
+        const cut = await removeBackground(file, { publicPath: BGREMOVAL_DATA, output: { format: "image/png" } });
+        crop = cropByAlpha(await createImageBitmap(cut));
+      } catch (e) {
+        console.error(e);
+        status("Freistellen hat nicht geklappt – Foto wird ohne Freistellen verwendet.");
+      }
+    }
+    const blob = await new Promise(r => renderRound(crop).toBlob(r, "image/png"));
+    status("Foto wird hochgeladen …");
+    const path = `signatur/${slug($("name").value)}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}.png`;
+    const res = await fetch(`${SUPA}/storage/v1/object/fotos/${path}`, {
+      method: "POST", headers: { apikey: SUPA_KEY, "Content-Type": "image/png" }, body: blob,
+    });
+    if (!res.ok) throw new Error(await res.text());
+    uploadedUrl = `${SUPA}/storage/v1/object/public/fotos/${path}`;
+    status("✓ Foto ist fertig und online gespeichert");
+  } catch (e) {
+    console.error(e);
+    status("Upload fehlgeschlagen – bitte erneut versuchen oder ein anderes Foto wählen.", true);
+  }
+  busy = false; render();
+}
+
 function render() {
+  const own = $("foto").value === "__upload__";
+  $("upload").hidden = !own;
   const v = {
     NAME: $("name").value.trim(), POSITION: $("position").value.trim(),
-    MOBIL: $("mobil").value.trim(), EMAIL: $("email").value.trim(), FOTO: $("foto").value,
+    MOBIL: $("mobil").value.trim(), EMAIL: $("email").value.trim(), FOTO: own ? uploadedUrl : $("foto").value,
   };
   let h = v.FOTO ? TPL.foto : TPL.wappen;
   for (const key of ["name", "position", "mobil", "email"]) {
@@ -73,7 +167,9 @@ function render() {
   h = h.replaceAll("{{TEL}}", esc(tel(v.MOBIL)));
   for (const k of ["NAME", "POSITION", "MOBIL", "EMAIL", "FOTO"]) h = h.replaceAll("{{" + k + "}}", esc(v[k]));
   $("sig").innerHTML = h;
-  $("copy").textContent = "Signatur kopieren";
+  const waiting = own && !uploadedUrl;
+  $("copy").disabled = waiting;
+  $("copy").textContent = waiting ? (busy ? "Foto wird vorbereitet …" : "Bitte zuerst ein Foto auswählen") : "Signatur kopieren";
   $("copy").classList.remove("done");
 }
 $("copy").addEventListener("click", () => {
@@ -87,6 +183,8 @@ $("copy").addEventListener("click", () => {
   $("copy").classList.add("done");
 });
 for (const id of ["name", "position", "mobil", "email", "foto"]) $(id).addEventListener("input", render);
+$("file").addEventListener("change", () => $("file").files[0] && processPhoto($("file").files[0]));
+$("freistellen").addEventListener("change", () => $("file").files[0] && processPhoto($("file").files[0]));
 render();
 </script>
 </body></html>
