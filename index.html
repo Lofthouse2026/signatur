@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Lofthouse E-Mail-Signatur</title>
+<style>
+  body { margin:0; background:#f4f5f5; font-family:Arial, Helvetica, sans-serif; color:#222; }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 16px 60px; }
+  h1 { color:#0a3e4a; font-size:24px; margin:0 0 4px; }
+  .sub { color:#5b6b70; margin:0 0 24px; }
+  .grid { display:grid; grid-template-columns:300px 1fr; gap:24px; align-items:start; }
+  @media (max-width:760px) { .grid { grid-template-columns:1fr; } }
+  .card { background:#fff; border:1px solid #e3e6e7; border-radius:8px; padding:20px; }
+  label { display:block; font-size:13px; font-weight:bold; color:#0a3e4a; margin:12px 0 4px; }
+  label:first-child { margin-top:0; }
+  input, select { width:100%; box-sizing:border-box; padding:9px 10px; font-size:14px; border:1px solid #cfd6d8; border-radius:6px; }
+  .hint { font-size:12px; color:#7a868a; margin-top:4px; }
+  button { margin-top:18px; width:100%; font-size:16px; padding:12px; background:#0a3e4a; color:#fff; border:0; border-radius:6px; cursor:pointer; }
+  button.done { background:#b18f3f; }
+  .preview { overflow-x:auto; }
+  h2 { color:#0a3e4a; font-size:18px; margin:32px 0 12px; }
+  ol { padding-left:20px; line-height:1.7; }
+  video { width:100%; max-width:720px; border-radius:8px; border:1px solid #e3e6e7; display:block; }
+</style></head>
+<body><div class="wrap">
+<h1>E-Mail-Signatur erstellen</h1>
+<p class="sub">Lofthouse Catering GmbH · Daten eintragen, Signatur kopieren, in Gmail einfügen.</p>
+<div class="grid">
+  <div class="card">
+    <label for="name">Name</label><input id="name" placeholder="Vorname Nachname">
+    <label for="position">Position</label><input id="position" placeholder="z. B. Eventmanagement">
+    <label for="mobil">Mobil (optional)</label><input id="mobil" placeholder="+49 170 1234567">
+    <label for="email">E-Mail</label><input id="email" placeholder="name@lh-catering.de">
+    <label for="foto">Foto</label>
+    <select id="foto"><option value="">Kein Foto – Lofthouse-Wappen</option><option value="foto-maikel-kling.png">Maikel Kling</option></select>
+    <div class="hint">Eigenes Foto gewünscht? Bitte an Maikel Kling schicken.</div>
+    <button id="copy" type="button">Signatur kopieren</button>
+  </div>
+  <div class="card preview"><div id="sig"></div></div>
+</div>
+<h2>So fügst du die Signatur in Gmail ein</h2>
+<ol>
+  <li>Links deine Daten eintragen und auf <b>Signatur kopieren</b> klicken.</li>
+  <li>Gmail öffnen → Zahnrad oben rechts → <b>Alle Einstellungen aufrufen</b>.</li>
+  <li>Im Tab <b>Allgemein</b> nach unten zu <b>Signatur</b> scrollen → <b>+ Neu erstellen</b>, Namen „Lofthouse“ vergeben.</li>
+  <li>Ins Textfeld klicken und <b>Cmd + V</b> (Windows: Strg + V) drücken.</li>
+  <li>Darunter bei <b>Standardsignatur</b> „Lofthouse“ für neue E-Mails und Antworten auswählen.</li>
+  <li>Ganz unten auf <b>Änderungen speichern</b> klicken.</li>
+</ol>
+<h2>Video-Anleitung (42 Sekunden)</h2>
+<video src="anleitung.mp4" controls playsinline preload="metadata"></video>
+</div>
+<script>
+const TPL = {"wappen": "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:540px;\">\n<tr><td style=\"padding:0;\">\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;\">\n<tr>\n<td valign=\"middle\" style=\"padding:0 20px 0 0;\"><img src=\"https://lofthouse2026.github.io/signatur/lofthouse-wappen.png\" width=\"120\" height=\"123\" alt=\"Lofthouse\" style=\"display:block;border:0;width:120px;height:123px;\"><\/td>\n<td valign=\"top\" style=\"border-left:2px solid #b18f3f;padding:2px 0 2px 20px;\">\n<a href=\"https://www.lh-catering.de\" target=\"_blank\" style=\"text-decoration:none;\"><img src=\"https://lofthouse2026.github.io/signatur/lofthouse-wortmarke.png\" width=\"230\" height=\"48\" alt=\"Lofthouse Catering &amp; Events\" style=\"display:block;border:0;width:230px;height:48px;\"><\/a>\n<!--name--><div style=\"font-family:Arial, Helvetica, sans-serif;font-size:17px;line-height:22px;font-weight:bold;color:#0a3e4a;padding-top:12px;\">{{NAME}}<\/div><!--/name--><!--position--><div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;font-size:13px;\">{{POSITION}}<\/div><!--/position-->\n<div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;padding-top:10px;\"><b style=\"color:#0a3e4a;\">Lofthouse Catering GmbH<\/b><br>Pirazzistra\u00dfe&nbsp;41 \u00b7 63067&nbsp;Offenbach<\/div>\n<div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;padding-top:4px;\"><span style=\"color:#b18f3f;font-weight:bold;\">T<\/span>&nbsp;&nbsp;<a href=\"tel:+4969810811\" style=\"color:#0a3e4a;text-decoration:none;\">069&nbsp;\u2013&nbsp;810&nbsp;811<\/a><!--mobil--><br><span style=\"color:#b18f3f;font-weight:bold;\">M<\/span>&nbsp;&nbsp;<a href=\"{{TEL}}\" style=\"color:#0a3e4a;text-decoration:none;\">{{MOBIL}}<\/a><!--/mobil--><!--email--><br><span style=\"color:#b18f3f;font-weight:bold;\">E<\/span>&nbsp;&nbsp;<a href=\"mailto:{{EMAIL}}\" style=\"color:#0a3e4a;text-decoration:none;\">{{EMAIL}}<\/a><!--/email--><br><span style=\"color:#b18f3f;font-weight:bold;\">W<\/span>&nbsp;&nbsp;<a href=\"https://www.lh-catering.de\" target=\"_blank\" style=\"color:#0a3e4a;text-decoration:none;font-weight:bold;\">www.LH-Catering.de<\/a><\/div>\n<div style=\"padding-top:8px;line-height:0;\"><a href=\"https://www.instagram.com/lofthousecatering/\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-instagram.png\" width=\"24\" height=\"24\" alt=\"Instagram\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><a href=\"https://www.facebook.com/lofthousecatering\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-facebook.png\" width=\"24\" height=\"24\" alt=\"Facebook\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><a href=\"https://www.linkedin.com/company/lofthouse-catering/\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-linkedin.png\" width=\"24\" height=\"24\" alt=\"LinkedIn\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><\/div>\n<\/td>\n<\/tr>\n<\/table>\n<\/td><\/tr>\n<tr><td style=\"padding:14px 0 0 0;\">\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;border-top:1px solid #dfe4e5;\">\n<tr>\n<td valign=\"middle\" style=\"padding:10px 12px 0 0;\"><img src=\"https://lofthouse2026.github.io/signatur/circle-cube-logo.png\" width=\"92\" height=\"20\" alt=\"Circle Cube\" style=\"display:block;border:0;width:92px;height:20px;\"><\/td>\n<td valign=\"middle\" style=\"font-family:Arial, Helvetica, sans-serif;font-size:11px;line-height:15px;color:#5b6b70;padding:10px 0 0 0;\">Unsere Eventlocation am Hafen<br><b style=\"color:#0a3e4a;\">Circle-Cube<\/b> \u00b7 Hafenallee 61 \u00b7 63067 Offenbach<\/td>\n<\/tr>\n<\/table>\n<\/td><\/tr>\n<\/table>", "foto": "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:540px;\">\n<tr><td style=\"padding:0;\">\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;\">\n<tr>\n<td valign=\"middle\" style=\"padding:0 20px 0 0;\"><img src=\"https://lofthouse2026.github.io/signatur/{{FOTO}}\" width=\"120\" height=\"120\" alt=\"{{NAME}}\" style=\"display:block;border:0;width:120px;height:120px;border-radius:50%;\"><\/td>\n<td valign=\"top\" style=\"border-left:2px solid #b18f3f;padding:2px 0 2px 20px;\">\n<a href=\"https://www.lh-catering.de\" target=\"_blank\" style=\"text-decoration:none;\"><img src=\"https://lofthouse2026.github.io/signatur/lofthouse-logo.png\" width=\"230\" height=\"50\" alt=\"Lofthouse Catering &amp; Events\" style=\"display:block;border:0;width:230px;height:50px;\"><\/a>\n<!--name--><div style=\"font-family:Arial, Helvetica, sans-serif;font-size:17px;line-height:22px;font-weight:bold;color:#0a3e4a;padding-top:12px;\">{{NAME}}<\/div><!--/name--><!--position--><div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;font-size:13px;\">{{POSITION}}<\/div><!--/position-->\n<div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;padding-top:10px;\"><b style=\"color:#0a3e4a;\">Lofthouse Catering GmbH<\/b><br>Pirazzistra\u00dfe&nbsp;41 \u00b7 63067&nbsp;Offenbach<\/div>\n<div style=\"font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;color:#5b6b70;padding-top:4px;\"><span style=\"color:#b18f3f;font-weight:bold;\">T<\/span>&nbsp;&nbsp;<a href=\"tel:+4969810811\" style=\"color:#0a3e4a;text-decoration:none;\">069&nbsp;\u2013&nbsp;810&nbsp;811<\/a><!--mobil--><br><span style=\"color:#b18f3f;font-weight:bold;\">M<\/span>&nbsp;&nbsp;<a href=\"{{TEL}}\" style=\"color:#0a3e4a;text-decoration:none;\">{{MOBIL}}<\/a><!--/mobil--><!--email--><br><span style=\"color:#b18f3f;font-weight:bold;\">E<\/span>&nbsp;&nbsp;<a href=\"mailto:{{EMAIL}}\" style=\"color:#0a3e4a;text-decoration:none;\">{{EMAIL}}<\/a><!--/email--><br><span style=\"color:#b18f3f;font-weight:bold;\">W<\/span>&nbsp;&nbsp;<a href=\"https://www.lh-catering.de\" target=\"_blank\" style=\"color:#0a3e4a;text-decoration:none;font-weight:bold;\">www.LH-Catering.de<\/a><\/div>\n<div style=\"padding-top:8px;line-height:0;\"><a href=\"https://www.instagram.com/lofthousecatering/\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-instagram.png\" width=\"24\" height=\"24\" alt=\"Instagram\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><a href=\"https://www.facebook.com/lofthousecatering\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-facebook.png\" width=\"24\" height=\"24\" alt=\"Facebook\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><a href=\"https://www.linkedin.com/company/lofthouse-catering/\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;margin-right:6px;\"><img src=\"https://lofthouse2026.github.io/signatur/icon-linkedin.png\" width=\"24\" height=\"24\" alt=\"LinkedIn\" style=\"display:block;border:0;width:24px;height:24px;\"><\/a><\/div>\n<\/td>\n<\/tr>\n<\/table>\n<\/td><\/tr>\n<tr><td style=\"padding:14px 0 0 0;\">\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;border-top:1px solid #dfe4e5;\">\n<tr>\n<td valign=\"middle\" style=\"padding:10px 12px 0 0;\"><img src=\"https://lofthouse2026.github.io/signatur/circle-cube-logo.png\" width=\"92\" height=\"20\" alt=\"Circle Cube\" style=\"display:block;border:0;width:92px;height:20px;\"><\/td>\n<td valign=\"middle\" style=\"font-family:Arial, Helvetica, sans-serif;font-size:11px;line-height:15px;color:#5b6b70;padding:10px 0 0 0;\">Unsere Eventlocation am Hafen<br><b style=\"color:#0a3e4a;\">Circle-Cube<\/b> \u00b7 Hafenallee 61 \u00b7 63067 Offenbach<\/td>\n<\/tr>\n<\/table>\n<\/td><\/tr>\n<\/table>"};
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function tel(m) {
+  let d = m.replace(/[^\d+]/g, "");
+  if (d.startsWith("00")) d = "+" + d.slice(2);
+  else if (d.startsWith("0")) d = "+49" + d.slice(1);
+  return "tel:" + d;
+}
+function render() {
+  const v = {
+    NAME: $("name").value.trim(), POSITION: $("position").value.trim(),
+    MOBIL: $("mobil").value.trim(), EMAIL: $("email").value.trim(), FOTO: $("foto").value,
+  };
+  let h = v.FOTO ? TPL.foto : TPL.wappen;
+  for (const key of ["name", "position", "mobil", "email"]) {
+    const re = new RegExp("<!--" + key + "-->([\\s\\S]*?)<!--/" + key + "-->", "g");
+    h = h.replace(re, v[key.toUpperCase()] ? "$1" : "");
+  }
+  h = h.replaceAll("{{TEL}}", esc(tel(v.MOBIL)));
+  for (const k of ["NAME", "POSITION", "MOBIL", "EMAIL", "FOTO"]) h = h.replaceAll("{{" + k + "}}", esc(v[k]));
+  $("sig").innerHTML = h;
+  $("copy").textContent = "Signatur kopieren";
+  $("copy").classList.remove("done");
+}
+$("copy").addEventListener("click", () => {
+  const range = document.createRange();
+  range.selectNodeContents($("sig"));
+  const sel = window.getSelection();
+  sel.removeAllRanges(); sel.addRange(range);
+  document.execCommand("copy");
+  sel.removeAllRanges();
+  $("copy").textContent = "Kopiert ✓ – jetzt in Gmail einfügen";
+  $("copy").classList.add("done");
+});
+for (const id of ["name", "position", "mobil", "email", "foto"]) $(id).addEventListener("input", render);
+render();
+</script>
+</body></html>
